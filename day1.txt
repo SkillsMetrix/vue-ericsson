@@ -12,26 +12,37 @@
 
     <div class="intro">
 
-        UserName: <input type="text" v-on:input="changeTitle">
-        {{title}}
-        <br>
-        <a v-bind:href="link">Google</a>
-        <p v-html="updatedLink"></p>
+        <h2>Counter: {{counter}} | {{secondCounter}}</h2>
+        <p>Result: {{result()}} | {{output}}</p>
+        <hr>
+        <button @click="counter++">INC</button>
+        <button @click="counter--">DEC</button>
+        <button @click="secondCounter++">Increse Second</button>
+
 
     </div>
     <script>
         var mydata = new Vue({
             el: '.intro',
             data: {
-                title: 'welcome',
-                link: 'http://google.com',
-                updatedLink:'<a href="http://google.com">Google</a>'
+                counter: 0,
+                secondCounter: 0
+
 
             },
-            methods: {
-                changeTitle: function (event) {
-                    this.title = event.target.value
+            computed: {
+                output: function () {
+                    console.log('computed');
 
+                    return this.counter > 5 ? 'Greater 5' : 'smaller:5'
+                }
+            }
+            ,
+            methods: {
+                result: function () {
+                    console.log('method');
+
+                    return this.counter > 5 ? 'Greater 5' : 'smaller:5'
                 }
             },
         })
