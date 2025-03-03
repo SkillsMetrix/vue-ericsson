@@ -1,52 +1,53 @@
+new Vue({
+    el: '#app',
+    // contains the data wana show to the client
+    data:{
+        title: 'THIS IS VUE Instance',
+        showParagraph: false
+    },
+    //get calls everytime when invoked
+    methods: {
+        show: function(){
+            this.showParagraph=true
+            this.updateTitle('the New VueJS (Updated Data)')
+        },
+        updateTitle:function(title){
+            this.title=title
+        }
+    },
+    // get called only when chenges are detected
+    computed:{
+        lowercaseTitle:function(){
+            return this.title.toLowerCase()
+        }
+    },
+    // uses the function name same as property name,and called when changes detected
+    watch:{
+        title:function(value){
+            alert('Title changed ,new value is ' + value)
+        }
+    }
+})
+
+----------
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="vue.js"></script>
+
 </head>
-
 <body>
+    
+<div id="app">
+    <h1>{{title}}</h1>
+    <hr>
+    <button @click="show">Show Para</button>
+</div>
 
-    <div class="intro">
-
-        <h2>Counter: {{counter}} | {{secondCounter}}</h2>
-        <p>Result: {{result()}} | {{output}}</p>
-        <hr>
-        <button @click="counter++">INC</button>
-        <button @click="counter--">DEC</button>
-        <button @click="secondCounter++">Increse Second</button>
-
-
-    </div>
-    <script>
-        var mydata = new Vue({
-            el: '.intro',
-            data: {
-                counter: 0,
-                secondCounter: 0
-
-
-            },
-            computed: {
-                output: function () {
-                    console.log('computed');
-
-                    return this.counter > 5 ? 'Greater 5' : 'smaller:5'
-                }
-            }
-            ,
-            methods: {
-                result: function () {
-                    console.log('method');
-
-                    return this.counter > 5 ? 'Greater 5' : 'smaller:5'
-                }
-            },
-        })
-    </script>
+<script src="app.js"></script> 
 </body>
-
 </html>
