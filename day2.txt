@@ -15,20 +15,36 @@ const sendMessage = () => {
 <style scoped></style>
 
 
--------------
+------------------
+
 
 <template>
   <div>
     Reciever
     <p>{{ message }}</p>
+
+    <hr>
+    <button @click="sendMessage">send message to parent</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref,defineEmits } from "vue";
 import eventBus from "./eventBus";
+
+
+const emit=defineEmits<{
+    (event:"udateMessage",message:string):void
+}>()
+
+const messageToParent=ref("hellooo, this is message from the child")
+
+const sendMessage=()=>{
+    emit("udateMessage",messageToParent.value)
+}
 // alternative to data() in usual codes
 const message = ref("");
+
 
 const recieveMessage = (msg: string) => {
   message.value = msg;
@@ -41,7 +57,39 @@ onMounted(() => {
 <style scoped></style>
 
 
------------------
+----------------
+
+
+<template>
+    <div>
+        <p>I am parent component</p>
+                    <p>Message From  Child : {{ data }}</p>
+        <hr/>
+<Sender/>
+<hr>
+<Reciever @udateMessage="handleMessage"/>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+import Sender from './Sender.vue';
+import Reciever from './Reciever.vue';
+
+const data= ref('')
+const handleMessage=(msg:string)=>{
+    data.value=msg
+
+}
+</script>
+
+<style scoped>
+
+</style>
+
+
+-----------
 
 
 import mitt from 'mitt'
