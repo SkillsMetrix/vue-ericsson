@@ -1,90 +1,55 @@
 <template>
-  <div class="component">
-    <h1>The User Component: {{ name }}</h1>
-    <button @click="changeName" class="btn btn-primary">Change Name</button>
-
-    <hr />
-    <div class="row">
-      <div class="col-xs-12 col-sm-6">
-        <UserDetails :myName="name" @nameWasReset="name=$event"
-        :resetFN="resetName"
-        />
-      </div>
-      <div class="col-xs-12 col-sm-6">
-        <UserEdit />
-      </div>
-    </div>
+  <div>
+    <h2>Sending messages</h2>
+    <button @click="sendMessage">Send</button>
   </div>
 </template>
 
-<script>
-import UserDetails from "./UserDetails.vue";
-import UserEdit from "./UserEdit.vue";
-export default {
-  data() {
-    return {
-      name: "admin",
-    };
-  },
-  methods: {
-    changeName() {
-      this.name = "Manager";
-    },
-    resetName(){
-        this.name='SHYAM'
-    }
-  },
-  components: {
-    UserDetails,
-    UserEdit,
-  },
+<script setup>
+import eventBus from "./eventBus";
+const sendMessage = () => {
+  eventBus.emit("messageEvent", "Mail from sender....!");
 };
 </script>
 
-<style scoped>
-div {
-  background-color: lightskyblue;
-}
-</style>
-------------
+<style scoped></style>
+
+
+-------------
 
 <template>
-    <div class="component">
-        
-        <p>User Name: {{ switchName() }}</p>
-         <button @click="resetName">Reset Name</button>
-        <button @click="resetFN">Reset Name</button>
-    </div>
+  <div>
+    Reciever
+    <p>{{ message }}</p>
+  </div>
 </template>
 
-<script>
- 
-export default{
-     
-    props: {
-        myName:{
-           type: String,
-        
-        },
-        
-        resetFN : Function
-    },
-    methods:{
-        switchName(){
-            return this.myName.split("").reverse().join("")
-        },
-        resetName(){
-            this.Myname='ADMIN'
-            emit('nameWasReset',this.myName)
-        }
-    },
-   
-    
-}
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import eventBus from "./eventBus";
+// alternative to data() in usual codes
+const message = ref("");
+
+const recieveMessage = (msg: string) => {
+  message.value = msg;
+};
+onMounted(() => {
+  eventBus.on("messageEvent", recieveMessage);
+});
 </script>
 
-<style scoped>
-    div {
-        background-color: lightcoral;
-    }
-</style>
+<style scoped></style>
+
+
+-----------------
+
+
+import mitt from 'mitt'
+
+type Events={
+    messageEvent:string
+}
+
+const eventBus= mitt<Events>()
+
+export default eventBus
