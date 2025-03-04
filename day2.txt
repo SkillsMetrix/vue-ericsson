@@ -1,12 +1,14 @@
 <template>
   <div class="component">
-    <h1>The User Component</h1>
-    <button class="btn btn-primary">Change Name</button>
+    <h1>The User Component: {{ name }}</h1>
+    <button @click="changeName" class="btn btn-primary">Change Name</button>
 
     <hr />
     <div class="row">
       <div class="col-xs-12 col-sm-6">
-        <UserDetails />
+        <UserDetails :myName="name" @nameWasReset="name=$event"
+        :resetFN="resetName"
+        />
       </div>
       <div class="col-xs-12 col-sm-6">
         <UserEdit />
@@ -19,6 +21,19 @@
 import UserDetails from "./UserDetails.vue";
 import UserEdit from "./UserEdit.vue";
 export default {
+  data() {
+    return {
+      name: "admin",
+    };
+  },
+  methods: {
+    changeName() {
+      this.name = "Manager";
+    },
+    resetName(){
+        this.name='SHYAM'
+    }
+  },
   components: {
     UserDetails,
     UserEdit,
@@ -31,38 +46,33 @@ div {
   background-color: lightskyblue;
 }
 </style>
-
-
----------------
+------------
 
 <template>
     <div class="component">
-User Edit
+
+User Name : {{ switchName() }}
+ <button @click="resetName">Reset Name</button>
+ <button @click="resetFN">Reset Function</button>
+
+
     </div>
 </template>
 
 <script>
     export default {
-        
-    }
-</script>
+        props:['myName'],
+        resetFN:Function,
+        methods:{
+            switchName(){
+                return this.myName.split("").reverse().join("")
+            },
+            resetName(){
+                this.myName='Amit'
+                emit('nameWasReset',this.myName)
+            }
+        },
 
-<style scoped>
-div{
-    background-color: lightgreen;
-}
-</style>
-
---------------
-
-<template>
-    <div class="component">
-User Details
-    </div>
-</template>
-
-<script>
-    export default {
         
     }
 </script>
@@ -70,35 +80,5 @@ User Details
 <style scoped>
 div{
     background-color: lightcoral;
-}
-</style>
-
-
-
------------
-
-<template>
-  <div class="container">
-    <User />
-  </div>
-</template>
-
-<script>
- import User from "./components/User.vue";
-export default {
-  components: {
-    User,
-  },
-};
-</script>
-
-<style >
-div.component{
-border: 1px solid black;
-padding: 30px;
-}
-p {
-  text-align: center;
-
 }
 </style>
