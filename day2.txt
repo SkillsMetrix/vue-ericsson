@@ -1,103 +1,129 @@
 <template>
-  <div>
-    <h2>Sending messages</h2>
-    <button @click="sendMessage">Send</button>
-  </div>
-</template>
+    <div class="container">
+        <form>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                    <h1>File a Complaint</h1>
+                    <hr>
+                    <div class="form-group">
+                        <label for="email">Mail</label>
+                        <input
+                                type="text"
+                                id="email"
+                                class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input
+                                type="password"
+                                id="password"
+                                class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input
+                                type="number"
+                                id="age"
+                                class="form-control">
+                    </div>
 
-<script setup>
-import eventBus from "./eventBus";
-const sendMessage = () => {
-  eventBus.emit("messageEvent", "Mail from sender....!");
-};
-</script>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 form-group">
+                    <label for="message">Message</label><br>
+                    <!-- Interpolation between <textarea>{{ test }}</textarea> doesn't work!-->
+                    <textarea
+                            id="message"
+                            rows="5"
+                            class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                    <div class="form-group">
+                        <label for="sendmail">
+                            <input
+                                    type="checkbox"
+                                    id="sendmail"
+                                    value="SendMail"> Send Mail
+                        </label>
+                        <label for="sendInfomail">
+                            <input
+                                    type="checkbox"
+                                    id="sendInfomail"
+                                    value="SendInfoMail"> Send Infomail
+                        </label>
+                    </div>
 
-<style scoped></style>
-
-
-------------------
-
-
-<template>
-  <div>
-    Reciever
-    <p>{{ message }}</p>
-
-    <hr>
-    <button @click="sendMessage">send message to parent</button>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { onMounted, ref,defineEmits } from "vue";
-import eventBus from "./eventBus";
-
-
-const emit=defineEmits<{
-    (event:"udateMessage",message:string):void
-}>()
-
-const messageToParent=ref("hellooo, this is message from the child")
-
-const sendMessage=()=>{
-    emit("udateMessage",messageToParent.value)
-}
-// alternative to data() in usual codes
-const message = ref("");
-
-
-const recieveMessage = (msg: string) => {
-  message.value = msg;
-};
-onMounted(() => {
-  eventBus.on("messageEvent", recieveMessage);
-});
-</script>
-
-<style scoped></style>
-
-
-----------------
-
-
-<template>
-    <div>
-        <p>I am parent component</p>
-                    <p>Message From  Child : {{ data }}</p>
-        <hr/>
-<Sender/>
-<hr>
-<Reciever @udateMessage="handleMessage"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 form-group">
+                    <label for="male">
+                        <input
+                                type="radio"
+                                id="male"
+                                value="Male"> Male
+                    </label>
+                    <label for="female">
+                        <input
+                                type="radio"
+                                id="female"
+                                value="Female"> Female
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 from-group">
+                    <label for="priority">Priority</label>
+                    <select
+                            id="priority"
+                            class="form-control">
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                    <button
+                            class="btn btn-primary">Submit!
+                    </button>
+                </div>
+            </div>
+        </form>
+        <hr>
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Your Data</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p>Mail:</p>
+                        <p>Password:</p>
+                        <p>Age:</p>
+                        <p>Message: </p>
+                        <p><strong>Send Mail?</strong></p>
+                        <ul>
+                            <li></li>
+                        </ul>
+                        <p>Gender:</p>
+                        <p>Priority:</p>
+                        <p>Switched:</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-
-import Sender from './Sender.vue';
-import Reciever from './Reciever.vue';
-
-const data= ref('')
-const handleMessage=(msg:string)=>{
-    data.value=msg
-
-}
+<script>
+    export default {
+    }
 </script>
 
-<style scoped>
+<style>
 
 </style>
-
-
------------
-
-
-import mitt from 'mitt'
-
-type Events={
-    messageEvent:string
-}
-
-const eventBus= mitt<Events>()
-
-export default eventBus
