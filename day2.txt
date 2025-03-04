@@ -60,12 +60,17 @@ div {
 </template>
 
 <script>
- 
- 
+ import eventBus from "./eventBus";
+ import { ref, onMounted, onUnmounted } from "vue";
+
 export default{
      
-    props: ['myName'],
+    props: {
+        Myname:{
+           type: String,
         
+        },
+        userAge: Number,
         resetFN : Function
     },
     methods:{
@@ -76,8 +81,13 @@ export default{
             this.Myname='ADMIN'
             emit('nameWasReset',this.Myname)
         }
+    },
+    onMounted(){
+        eventBus.on('ageWasEdited',(age) =>{
+            this.userAge=age
+        })
     }
-    
+}
 </script>
 
 <style scoped>
