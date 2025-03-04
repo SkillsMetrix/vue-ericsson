@@ -1,0 +1,74 @@
+<template>
+  <div class="component">
+    <h1>The User Component</h1>
+    <button class="btn btn-primary">Change Name</button>
+
+    <hr />
+    <div class="row">
+      <div class="col-xs-12 col-sm-6">
+        <UserDetails />
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <UserEdit />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import UserDetails from "./UserDetails.vue";
+import UserEdit from "./UserEdit.vue";
+export default {
+  components: {
+    UserDetails,
+    UserEdit,
+  },
+};
+</script>
+
+<style scoped>
+div {
+  background-color: lightskyblue;
+}
+</style>
+
+
+---------------
+
+<template>
+    <div class="component">
+User Edit
+    </div>
+</template>
+
+<script>
+    export default {
+        
+    }
+</script>
+
+<style scoped>
+div{
+    background-color: lightgreen;
+}
+</style>
+
+--------------
+
+<template>
+    <div class="component">
+User Details
+    </div>
+</template>
+
+<script>
+    export default {
+        
+    }
+</script>
+
+<style scoped>
+div{
+    background-color: lightcoral;
+}
+</style>
