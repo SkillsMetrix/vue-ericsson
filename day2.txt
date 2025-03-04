@@ -52,8 +52,7 @@ div {
     <div class="component">
         
         <p>User Name: {{ switchName() }}</p>
-        <p>User Age is  : {{ userAge }}</p>
-        <button @click="resetName">Reset Name</button>
+         <button @click="resetName">Reset Name</button>
         <button @click="resetFN">Reset Name</button>
     </div>
 </template>
