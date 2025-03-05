@@ -74,3 +74,20 @@ const addUser = async () => {
 </script>
 
 <style scoped></style>
+
+
+-----------
+
+import axios from "axios";
+
+const API_URL="http://localhost:3000/users"
+
+export interface User {
+    uname: string;
+    email: string;
+    password: string;
+  }
+
+export const registerUser=async(user:User) =>{
+    return await axios.post(API_URL,user)
+}
