@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form @submit.prevent="registerUser">
+    <form @submit.prevent="addUser">
       <div class="form-group">
         <label for="uname">UserName</label>
         <input
@@ -45,15 +45,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import axios from "axios";
-// define the form data with TS
+import { User, registerUser } from "../services/UserService";
 
-interface User {
-  uname: string;
-  email: string;
-  password: string;
-}
-// declare the default values to the prop
 const form = ref<User>({
   uname: "",
   email: "",
@@ -63,16 +56,13 @@ const form = ref<User>({
 const message = ref(null);
 const loading = ref(false);
 
-const registerUser = async () => {
+const addUser = async () => {
   loading.value = true;
 
   try {
-    const response = await axios.post(
-      "http://localhost:3000/users",
-      form.value
-    );
+    await registerUser(form.value);
     message.value = "Registration SuccessFull";
-    console.log("User Added");
+
     form.value = { uname: "", email: "", password: "" };
   } catch (error) {
     message.value = "Registration Failed...!";
