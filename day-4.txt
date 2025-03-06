@@ -1,105 +1,44 @@
-<template>
-  <div class="container">
-    <div class="card">
-      <div class="card-header">Student Registration Form</div>
-      <div class="card-body">
-        <h5 class="card-title">Please fill all the Details</h5>
-        <form @submit.prevent="saveStudent">
-          <div class="form-group">
-            <input
-              type="text"
-              required
-              class="form-control"
-              v-model="student.name"
-              placeholder="StudentName"
-            />
-          </div>
-          <br />
-          <div class="form-group">
-            <input
-              type="number"
-              required
-              v-model="student.age"
-              class="form-control"
-              placeholder="Enter Age"
-            />
-          </div>
-          <br />
-          <div class="form-group">
-            <input
-              type="text"
-              v-model="student.course"
-              required
-              class="form-control"
-              placeholder="Course"
-            />
-          </div>
 
-          <button type="submit" class="btn btn-success">
-            {{ isEditedMode ? "Update" : "Registration" }}
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
+import { Directive } from 'vue'
+
+const appColor: Directive = {
+    mounted(el: HTMLElement, binding) {
+        el.style.color = binding.value || 'black'
+    },
+    updated(el: HTMLElement, binding) {
+        el.style.color = binding.value || 'black'
+    }
+}
+export default appColor
+---
+<template>
+ <p v-color="'red'">Welcome to directive</p>  
+ <p v-color="textColor">Welcome to directive</p>  
+ <button @click="textColor='green'">change</button>
+
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import StudentService, { Student } from "@/services/UserService";
-import { useRouter, useRoute } from "vue-router";
-const router = useRouter();
-const isEditedMode = ref(false);
-const student = ref<Student>({
-  name: "",
-  age: "",
-  course: "",
-});
-const route = useRoute();
-onMounted(async () => {
-  if (route.params.id) {
-    isEditedMode.value = true;
-    const response = await StudentService.getById(route.params.id);
-    student.value = response.data;
-  }
-});
-const saveStudent = async () => {
-  if (isEditedMode.value) {
-    await StudentService.update(route.params.id, student.value);
-  } else {
-    await StudentService.create(student.value);
-  }
-  router.push("/studentlist");
-};
+import {ref} from 'vue'
+const textColor=ref('blue')
 </script>
 
---------------
-
-
-import axios from "axios";
-
-const API_URL = "http://localhost:3000/students"
-
-export interface Student {
-  id?: string
-  name: string;
-  age: string;
-  course: string;
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
+</style>
 
-class StudentService {
-  getAll() {
-    return axios.get<Student[]>(API_URL);
-  }
-  create(student: Student) {
-    return axios.post<Student>(API_URL, student)
-  }
-  getById(id:string){
-    return axios.get<Student>(`${API_URL}/${id}`)
-  }
-  update(id:string,student:Student){
-    return axios.put<Student>(`${API_URL}/${id}`,student)
-  }
 
-}
-export default new StudentService()
+------------
+
+import { createApp } from 'vue'
+import App from './App.vue'
+
+import appColor from './directives/colordir'
+createApp(App).directive("color",appColor).mount('#app')
