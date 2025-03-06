@@ -1,26 +1,51 @@
+import { Directive } from "vue";
 
-import { Directive } from 'vue'
-
-const appColor: Directive = {
-    mounted(el: HTMLElement, binding) {
-        el.style.color = binding.value || 'black'
+const tempDir: Directive = {
+    mounted(el: HTMLInputElement) {
+        el.addEventListener('input', () => {
+            const celsius = parseFloat(el.value)
+            if (!isNaN(celsius)) {
+                const fah = (celsius * 9) / 5 + 32
+                el.value = `${fah.toFixed(2)} F`
+            } else {
+                el.value = ""
+            }
+        })
     },
-    updated(el: HTMLElement, binding) {
-        el.style.color = binding.value || 'black'
+    unmounted(el: HTMLInputElement) {
+        el.removeEventListener('input', () => { })
     }
 }
-export default appColor
----
-<template>
- <p v-color="'red'">Welcome to directive</p>  
- <p v-color="textColor">Welcome to directive</p>  
- <button @click="textColor='green'">change</button>
+export default tempDir
 
+
+-------------
+
+
+<template>
+  <p v-color="'red'">Welcome to directive</p>
+  <p v-color="textColor">Welcome to directive</p>
+  <button @click="textColor = 'green'">change</button>
+
+  <hr />
+  <p>Using TextBox</p>
+  <input type="text" v-model="useColor" v-txtcolor placeholder="Enter Color" />
+
+  <hr />
+  <p>Temp Converter</p>
+  <input
+    type="text"
+    v-model="tc"
+    v-tempdir
+    placeholder="Enter Temp in celsius"
+  />
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
-const textColor=ref('blue')
+import { ref } from "vue";
+const textColor = ref("blue");
+const useColor = ref("");
+const tc = ref("");
 </script>
 
 <style>
@@ -33,12 +58,3 @@ const textColor=ref('blue')
   margin-top: 60px;
 }
 </style>
-
-
-------------
-
-import { createApp } from 'vue'
-import App from './App.vue'
-
-import appColor from './directives/colordir'
-createApp(App).directive("color",appColor).mount('#app')
