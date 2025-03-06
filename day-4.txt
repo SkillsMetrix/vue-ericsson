@@ -1,0 +1,43 @@
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import StudentService, { Student } from "@/services/UserService";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const students = ref<Student[]>([]);
+
+const loadStudents = async () => {
+  try {
+    const response = await StudentService.getAll();
+    students.value = response.data;
+  } catch (error) {
+    console.error("Error Loading Students...!", error);
+  }
+};
+onMounted(loadStudents);
+</script>
+
+<template>
+  <div class="container mt-4">
+    <h2>Student Details</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr class="table-active">
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Age</th>
+          <th scope="col">Course</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="student in students" :key="student.id">
+          <td>{{ student.id }}</td>
+          <td>{{ student.name }}</td>
+          <td>{{ student.age }}</td>
+          <td>{{ student.course }}</td>
+          <td>Edit | Delete</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
