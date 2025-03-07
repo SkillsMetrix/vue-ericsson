@@ -39,6 +39,44 @@ const searchCity = async (inputCity) => {
   } catch (error) {
     console.log(error);
   }
+
+
+
+------------------
+
+
+import {defineStore} from 'pinia'
+
+export const useCitiesStore=defineStore('cities',{
+    state:() =>({
+        weatherData:[]
+    }),
+    // getters return data from the store
+    getters:{
+        getNumberOfCities:(state) => {return state.weatherData.length}
+    },
+    //actions are the operations that changes the state
+    actions:{
+        addCity(city,state,country,summary,currentTemp,high,low) {
+            if(this.weatherData.find(({cityName}) => cityName === city) ===undefined){
+                this.weatherData.push({
+                    'cityName' :city,
+                    'stateName': state,
+                    'countryAbbreviation' :country,
+                    'weatherSummary': summary,
+                    'currentTemprature': currentTemp,
+                    'dailyHigh' : high,
+                    'dailyLow':low
+                })
+            }
+        },
+        clearAllCities(){
+            this.weatherData.length =0
+        }
+    }
+
+})
+
 };
 </script>
 
