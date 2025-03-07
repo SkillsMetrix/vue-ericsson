@@ -1,150 +1,44 @@
-<template>
-  <div class="container">
-    <div class="card">
-      <div class="card-header">Student Registration Form</div>
-      <div class="card-body">
-        <h5 class="card-title">Please fill all the Details</h5>
-        <form @submit.prevent="saveStudent">
-          <div class="form-group">
-            <input
-              type="text"
-              required
-              class="form-control"
-              v-model="student.name"
-              placeholder="StudentName"
-            />
-          </div>
-          <br />
-          <div class="form-group">
-            <input
-              type="number"
-              required
-              v-model="student.age"
-              class="form-control"
-              placeholder="Enter Age"
-            />
-          </div>
-          <br />
-          <div class="form-group">
-            <input
-              type="text"
-              v-model="student.course"
-              required
-              class="form-control"
-              placeholder="Course"
-            />
-          </div>
 
-          <button type="submit" class="btn btn-success">
-            {{ isEditedMode ? "Update" : "Registration" }}
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
+
+<template>
+    <div class="container">
+        <weather-header v-bind:title="headerTitle"></weather-header>
+    <center><p></p></center>   
+            </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { studentStore } from "@/store/studentStore";
-import { useRouter, useRoute } from "vue-router";
-import { Student, studentService } from "@/services/UserService";
-const router = useRouter();
-const isEditedMode = ref(false);
-const studentStoreApp = studentStore();
 
-const student = ref<Student>({
-  name: "",
-  age: "",
-  course: "",
-});
-const route = useRoute();
-onMounted(async () => {
-  if (route.params.id) {
-    isEditedMode.value = true;
-    const response = await studentService.getById(route.params.id);
-    student.value = response.data;
-  }
-});
-const saveStudent =  () => {
-  if (isEditedMode.value) {
-    studentStoreApp.updateStudent(route.params.id, student.value);
-  } else {
-    studentStoreApp.addStudent(student.value)
-  }
-  router.push("/studentlist");
-};
+
+
+
+<script setup>
+import {ref} from 'vue'
+import WeatherFooter from './components/WeatherFooter.vue';
+import WeatherHeader from './components/WeatherHeader.vue';
+import WeatherContent from './components/WeatherContent.vue';
+
+const headerTitle=ref('Welcome to skillsmetrix Weather App')
 </script>
 
+--------------
 
-  -----------
-
-
-  import axios from "axios";
-const API_URL = "http://localhost:3002/students"
-
-export interface Student {
-  id?: string
-  name: string;
-  age: string;
-  course: string;
+<script setup>
+const props = defineProps({
+  title: String,
+});
+</script>
+<template>
+  <header>
+    <h5>{{ title }}</h5>
+  </header>
+</template>
+<style scoped>
+header {
+  margin: auto;
+  text-align: center;
+  margin-bottom: 2.5em;
 }
-
-export const studentService = {
-
-  async getAll() {
-    const response = await axios.get<Student[]>(API_URL);
-    return response.data
-  },
-  async create(student: Student) {
-    const response = await axios.post<Student>(API_URL, student)
-    return response.data
-  },
-  getById(id: string) {
-    axios.get<Student>(`${API_URL}/${id}`)
-  },
-  async update(id: string, student: Student) {
-    const response = await axios.put<Student>(`${API_URL}/${id}`, student)
-    return response.data
-  },
-  async delete(id: string) {
-    await axios.delete<Student>(`${API_URL}/${id}`)
-
-  }
-
-
+header h5 {
+  font-size: 1.5em;
 }
-
-
-
----------------
-
-  import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { Student, studentService } from '@/services/UserService'
-
-
-export const studentStore = defineStore("student", () => {
-    const students = ref<Student[]>([])
-
-    const fetchStudents = async () => {
-        students.value = await studentService.getAll()
-    }
-    const addStudent = async (student: Student) => {
-        await studentService.create(student)
-        fetchStudents()
-    }
-    const updateStudent = async (id: string, student: Student) => {
-        await studentService.update(id, student)
-        fetchStudents()
-    }
-    const deleteStudent = async (id: string) => {
-        await studentService.delete(id)
-        fetchStudents()
-    }
-
-    return { students, fetchStudents, addStudent, updateStudent, deleteStudent }
-})
-
-
-
+</style>
