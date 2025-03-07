@@ -81,7 +81,17 @@ const clearMessage = () => {
 </script>
 
 <template>
-
-
-    
+  <div class="content">
+    <WeatherBanner
+      class="banner"
+      v-bind:bannerMessage="messageToDisplay"
+      v-bind:bannerType="messageType"
+      v-on:clear-banner="clearMessage"
+    ></WeatherBanner>
+    <CitySearch
+      class="weather-search"
+      v-on:search-city="searchCity"
+    ></CitySearch>
+    <CityList class="cities"></CityList>
+  </div>
 </template>
