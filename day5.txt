@@ -1,97 +1,71 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import WeatherBanner from "./WeatherBanner.vue";
-import CitySearch from "./CitySearch.vue";
-import CityList from "./CityList.vue";
-import axios from "axios";
-import { useCitiesStore } from "../../src/stores/cities";
+import {ref,computed} from 'vue'
 
-const cityStore = useCitiesStore();
+const emit= defineEmits(['search-city'])
 
-// message to display for Banner
-const messageToDisplay = ref("");
+const inputCity= ref('')
 
-const messageType = ref("Info");
-
-const openweathermapApiKey = ref("b3aaa0b3323c0baab93aff38f75b44cb");
-
-onMounted(() => {
-  console.log("mounted");
-
-  searchCity("mumbai");
-});
-const searchCity = async (inputCity) => {
-  var latitude = 0.0;
-  var longitude = 0.0;
-  var city = "";
-  var state = "";
-  var country = "";
-  try {
-    const response = await axios.get(
-      "https://api.openweathermap.org/geo/1.0/direct?q=" +
-        inputCity +
-        "&APPID=" +
-        openweathermapApiKey.value
-    );
-
-    latitude = response.data[0].lat;
-
-    longitude = response.data[0].lon;
-
-    city = response.data[0].name;
-
-    if ("state" in response.data[0]) {
-      state = response.data[0].state;
+const searchDisabled= computed(()=>{
+    if(inputCity.value){
+        return false
     }
-    country = response.data[0].country;
-  } catch (error) {
-    console.log(error);
-    messageType.value = "Error";
-    messageToDisplay.value =
-      "Error...! unable to retrive data for " + inputCity;
-  }
-  if (city !== "") {
-    try {
-      const response2 = await axios.get(
-        "https://api.openweathermap.org/data/2.5/weather?lat=" +
-          latitude +
-          "&lon=" +
-          longitude +
-          "&units=imperial&APPID=" +
-          openweathermapApiKey.value
-      );
-
-      cityStore.addCity(
-        city,
-        state,
-        country,
-        response2.data.weather[0].main,
-        response2.data.main.temp,
-        response2.data.main.temp_max,
-        response2.data.main.temp_min
-      );
-    } catch (error) {
-      console.log(error);
+    return true
+})
+const clearDisabled= computed(()=>{
+    if(inputCity.value){
+        return false
     }
-  }
-};
-const clearMessage = () => {
-  (messageToDisplay.value = ""), (messageType.value = "Infor");
-};
+    return true
+})
+
+const searchCity=()=>{
+    console.log('called');
+    
+    emit('search-city',inputCity.value)
+}
+const clearCity=()=>{
+    inputCity.value=''
+}
 </script>
-
 <template>
-  <div class="content">
-    <WeatherBanner
-      class="banner"
-      v-bind:bannerMessage="messageToDisplay"
-      v-bind:bannerType="messageType"
-      v-on:clear-banner="clearMessage"
-    ></WeatherBanner>
-    <CitySearch
-      class="weather-search"
-      v-on:search-city="searchCity"
-    ></CitySearch>
-    <CityList class="cities"></CityList>
-  </div>
+    <div class="city-search">
+        <div class="city-search-title">
+            <h2>Weather Search</h2>
+        </div>
+        <div class="city-search-input">
+            <label for="cityInput">City:</label>
+            <input type="text" id="cityInput" v-model="inputCity" placeholder="Enter City name">
+            <br>
+            <div class="city-search-buttons">
+                <button type="submit" v-on:click="searchCity" v-bind:disabled="searchDisabled">
+                    Search
+                </button>
+                <button type="reset" v-on:click="clearCity" v-bind:disabled="searchDisabled">
+                    Clear
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
+
+<style>
+
+.city-search{
+    margin: auto;
+}
+.city-search-title h2{
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+.city-search-buttons{
+    text-align: center;
+}
+.city-search-input{
+    text-align: center;
+}
+.city-search-input label{
+    font-size: 1.35em;
+    margin-right: 0.5em;
+}
+
+</style>
