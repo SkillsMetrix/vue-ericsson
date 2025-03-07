@@ -33,34 +33,55 @@ const searchCity = async (inputCity) => {
         "&APPID=" +
         openweathermapApiKey.value
     );
-    console.log(response.data[0].lat);
-    
 
     latitude = response.data[0].lat;
+
     longitude = response.data[0].lon;
-    city == response.data[0].name;
-    if ("state" in response.data[0]) { state = response.data[0].state}
+
+    city = response.data[0].name;
+
+    if ("state" in response.data[0]) {
+      state = response.data[0].state;
+    }
     country = response.data[0].country;
   } catch (error) {
     console.log(error);
-    messageType.value='Error'
-    messageToDisplay.value='Error...! unable to retrive data for '+ inputCity
+    messageType.value = "Error";
+    messageToDisplay.value =
+      "Error...! unable to retrive data for " + inputCity;
   }
-  if(city!==''){
-    try{
-        const response2 = await axios.get('https://api.openweathermap.org/data/2.5/weather?lat='+latitude+ '&lon='+longitude +'&units=imperial&APPID='+openweathermapApiKey.value);
+  if (city !== "") {
+    try {
+      const response2 = await axios.get(
+        "https://api.openweathermap.org/data/2.5/weather?lat=" +
+          latitude +
+          "&lon=" +
+          longitude +
+          "&units=imperial&APPID=" +
+          openweathermapApiKey.value
+      );
 
-        //handle success
-        console.log(response2.data.main.temp);
-        console.log(response2.data.main.temp_max);
-
-        
-    }catch(error){
-        console.log(error);
-        
+      cityStore.addCity(
+        city,
+        state,
+        country,
+        response2.data.weather[0].main,
+        response2.data.main.temp,
+        response2.data.main.temp_max,
+        response2.data.main.temp_min
+      );
+    } catch (error) {
+      console.log(error);
     }
   }
 };
+const clearMessage = () => {
+  (messageToDisplay.value = ""), (messageType.value = "Infor");
+};
 </script>
 
-<template>content</template>
+<template>
+
+
+    
+</template>
