@@ -1,44 +1,45 @@
-
-
-<template>
-    <div class="container">
-        <weather-header v-bind:title="headerTitle"></weather-header>
-    <center><p></p></center>   
-            </div>
-</template>
-
-
-
-
-
 <script setup>
-import {ref} from 'vue'
-import WeatherFooter from './components/WeatherFooter.vue';
-import WeatherHeader from './components/WeatherHeader.vue';
-import WeatherContent from './components/WeatherContent.vue';
+import { ref, onMounted } from "vue";
+import WeatherBanner from "./WeatherBanner.vue";
+import CitySearch from "./CitySearch.vue";
+import CityList from "./CityList.vue";
+import axios from "axios";
+import { useCitiesStore } from "../../src/stores/cities";
 
-const headerTitle=ref('Welcome to skillsmetrix Weather App')
-</script>
+const cityStore = useCitiesStore();
 
---------------
+// message to display for Banner
+const messageToDisplay = ref("");
 
-<script setup>
-const props = defineProps({
-  title: String,
+const messageType = ref("Info");
+
+const openweathermapApiKey = ref("b3aaa0b3323c0baab93aff38f75b44cb");
+
+onMounted(() => {
+  console.log("mounted");
+
+  searchCity("pune");
 });
+const searchCity = async (inputCity) => {
+  var latitude = 0.0;
+  var longitude = 0.0;
+  var city = "";
+  var state = "";
+  var country = "";
+  try {
+    const response = await axios.get(
+      "https://api.openweathermap.org/geo/1.0/direct?q=" +
+        inputCity +
+        "&APPID=" +
+        openweathermapApiKey.value
+    );
+    console.log(
+      `Sucessfully retrived coordinates for ${inputCity}  ${response.data[0].lat}`
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
-<template>
-  <header>
-    <h5>{{ title }}</h5>
-  </header>
-</template>
-<style scoped>
-header {
-  margin: auto;
-  text-align: center;
-  margin-bottom: 2.5em;
-}
-header h5 {
-  font-size: 1.5em;
-}
-</style>
+
+<template>content</template>
