@@ -18,7 +18,7 @@ const openweathermapApiKey = ref("b3aaa0b3323c0baab93aff38f75b44cb");
 onMounted(() => {
   console.log("mounted");
 
-  searchCity("pune");
+  searchCity("mumbai");
 });
 const searchCity = async (inputCity) => {
   var latitude = 0.0;
@@ -33,50 +33,33 @@ const searchCity = async (inputCity) => {
         "&APPID=" +
         openweathermapApiKey.value
     );
-    console.log(
-      `Sucessfully retrived coordinates for ${inputCity}  ${response.data[0].lat}`
-    );
+    console.log(response.data[0].lat);
+    
+
+    latitude = response.data[0].lat;
+    longitude = response.data[0].lon;
+    city == response.data[0].name;
+    if ("state" in response.data[0]) { state = response.data[0].state}
+    country = response.data[0].country;
   } catch (error) {
     console.log(error);
+    messageType.value='Error'
+    messageToDisplay.value='Error...! unable to retrive data for '+ inputCity
   }
+  if(city!==''){
+    try{
+        const response2 = await axios.get('https://api.openweathermap.org/data/2.5/weather?lat='+latitude+ '&lon='+longitude +'&units=imperial&APPID='+openweathermapApiKey.value);
 
+        //handle success
+        console.log(response2.data.main.temp);
+        console.log(response2.data.main.temp_max);
 
-
-------------------
-
-
-import {defineStore} from 'pinia'
-
-export const useCitiesStore=defineStore('cities',{
-    state:() =>({
-        weatherData:[]
-    }),
-    // getters return data from the store
-    getters:{
-        getNumberOfCities:(state) => {return state.weatherData.length}
-    },
-    //actions are the operations that changes the state
-    actions:{
-        addCity(city,state,country,summary,currentTemp,high,low) {
-            if(this.weatherData.find(({cityName}) => cityName === city) ===undefined){
-                this.weatherData.push({
-                    'cityName' :city,
-                    'stateName': state,
-                    'countryAbbreviation' :country,
-                    'weatherSummary': summary,
-                    'currentTemprature': currentTemp,
-                    'dailyHigh' : high,
-                    'dailyLow':low
-                })
-            }
-        },
-        clearAllCities(){
-            this.weatherData.length =0
-        }
+        
+    }catch(error){
+        console.log(error);
+        
     }
-
-})
-
+  }
 };
 </script>
 
